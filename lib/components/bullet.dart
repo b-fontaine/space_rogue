@@ -1,6 +1,7 @@
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 
+import 'boss.dart';
 import 'ennemy.dart';
 
 class BulletComponent extends SpriteAnimationComponent
@@ -35,6 +36,10 @@ class BulletComponent extends SpriteAnimationComponent
   ) {
     super.onCollisionStart(intersectionPoints, other);
     if (other is EnemyComponent) {
+      other.takeHit();
+      removeFromParent();
+    }
+    if (other is BossComponent) {
       other.takeHit();
       removeFromParent();
     }

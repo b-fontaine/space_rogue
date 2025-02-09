@@ -2,6 +2,7 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 
 import '../game/rogue_shooter.dart';
+import 'boss.dart';
 import 'bullet.dart';
 import 'ennemy.dart';
 import 'explosion.dart';
@@ -65,7 +66,7 @@ class PlayerComponent extends SpriteAnimationComponent
     PositionComponent other,
   ) {
     super.onCollisionStart(intersectionPoints, other);
-    if (other is EnemyComponent) {
+    if (other is EnemyComponent || other is BossComponent) {
       takeHit();
     }
   }

@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flame/components.dart';
 
+import 'boss.dart';
 import 'ennemy.dart';
 
 class EnnemyCreator extends TimerComponent with HasGameRef {
@@ -20,13 +21,11 @@ class EnnemyCreator extends TimerComponent with HasGameRef {
       return;
     }
     if (level > 20) {
-      final newHalfWidth = Vector2.all(60).x / 2;
       game.add(
-        EnemyComponent(
-          dimension: 60,
+        BossComponent(
           position: Vector2(
-            newHalfWidth + (game.size.x - newHalfWidth) * random.nextDouble(),
-            random.nextDouble() * (game.size.y / 5),
+            15 + (game.size.x - 15) * random.nextDouble(),
+            0,
           ),
           speed: EnemyComponent.defaultSpeed,
         ),
