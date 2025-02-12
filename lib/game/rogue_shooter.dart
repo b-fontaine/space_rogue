@@ -1,6 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
+import 'package:flame_audio/flame_audio.dart';
 
 import '../components/ennemy_creator.dart';
 import '../components/player.dart';
@@ -13,6 +14,7 @@ class RogueShooterGame extends FlameGame
     detection system in Flame.
   ''';
 
+  late final AudioPool _bulletPool;
   late final PlayerComponent _player;
   late final TextComponent _componentCounter;
   late final TextComponent _scoreText;
@@ -31,6 +33,17 @@ class RogueShooterGame extends FlameGame
 
   @override
   Future<void> onLoad() async {
+    // Load audio
+    await FlameAudio.audioCache.load('alienshoot1.wav');
+
+    _bulletPool = await FlameAudio.createPool(
+      'alienshoot1.wav',
+      minPlayers: 5,
+      maxPlayers: 10,
+    );
+
+    bulletPool.start(volume: 0.0);
+
     add(_player = PlayerComponent());
     _background = StarBackGroundCreator();
 
@@ -84,6 +97,8 @@ class RogueShooterGame extends FlameGame
   void onPanUpdate(DragUpdateInfo info) {
     _player.position += info.delta.global;
   }
+
+  AudioPool get bulletPool => _bulletPool;
 
   void takeHit() {
     _life--;

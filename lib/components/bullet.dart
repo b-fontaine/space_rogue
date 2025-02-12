@@ -1,13 +1,16 @@
+import 'dart:math';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+import 'package:space_rogue/game/rogue_shooter.dart';
 
 import 'boss.dart';
 import 'ennemy.dart';
 
 class BulletComponent extends SpriteAnimationComponent
-    with HasGameRef, CollisionCallbacks {
+    with HasGameRef<RogueShooterGame>, CollisionCallbacks {
   static const speed = 500.0;
   late final Vector2 velocity;
+  final Random random = Random();
   final Vector2 deltaPosition = Vector2.zero();
 
   BulletComponent({required super.position, super.angle})
@@ -15,6 +18,9 @@ class BulletComponent extends SpriteAnimationComponent
 
   @override
   Future<void> onLoad() async {
+    double randomVolume = 0.02 + random.nextDouble() * 0.06;
+    gameRef.bulletPool.start(volume: randomVolume);
+
     add(CircleHitbox());
     animation = await game.loadSpriteAnimation(
       'bullet.png',
