@@ -19,7 +19,7 @@ class RogueShooterGame extends FlameGame
   late final TextComponent _componentCounter;
   late final TextComponent _scoreText;
   late final Component _background;
-  late final EnnemyCreator _ennemies = EnnemyCreator();
+  late final EnnemyCreator _ennemies;
 
   int _life = 10;
 
@@ -35,33 +35,41 @@ class RogueShooterGame extends FlameGame
   Future<void> onLoad() async {
     // Load audio
     await FlameAudio.audioCache.load('alienshoot1.wav');
-
     _bulletPool = await FlameAudio.createPool(
       'alienshoot1.wav',
-      minPlayers: 5,
-      maxPlayers: 10,
+      minPlayers: 1,
+      maxPlayers: 20,
     );
 
-    bulletPool.start(volume: 0.0);
-
-    add(_player = PlayerComponent());
+    _player = PlayerComponent();
+    _ennemies = EnnemyCreator();
     _background = StarBackGroundCreator();
+    _scoreText = TextComponent(
+        position: size - Vector2(0, 25),
+        anchor: Anchor.bottomRight,
+        priority: 1,
+      );
+    _componentCounter = TextComponent(
+      position: size,
+      anchor: Anchor.bottomRight,
+      priority: 1,
+    );
+  }
+
+  startGame() {
+    overlays.remove('TitleScreen');
+
+    bulletPool.start(volume: 0);
+
+    add(_player);
 
     addAll([
       FpsTextComponent(
         position: size - Vector2(0, 50),
         anchor: Anchor.bottomRight,
       ),
-      _scoreText = TextComponent(
-        position: size - Vector2(0, 25),
-        anchor: Anchor.bottomRight,
-        priority: 1,
-      ),
-      _componentCounter = TextComponent(
-        position: size,
-        anchor: Anchor.bottomRight,
-        priority: 1,
-      ),
+      _scoreText,
+      _componentCounter,
     ]);
 
     add(_ennemies);
@@ -79,12 +87,12 @@ class RogueShooterGame extends FlameGame
   }
 
   @override
-  void onPanStart(_) {
+  void onPanStart(info) {
     _player.beginFire();
   }
 
   @override
-  void onPanEnd(_) {
+  void onPanEnd(info) {
     _player.stopFire();
   }
 
