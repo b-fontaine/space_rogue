@@ -8,15 +8,15 @@ class TitleScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material( // Ensure Material context for buttons
-      color: Colors.black, // Background color to avoid grey screen
+    return Material(
+      color: Colors.black,
       child: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-              'Space Rogue', // Change this to your game title
+              'Space Rogue',
               style: TextStyle(
                 fontSize: 50,
                 fontWeight: FontWeight.bold,

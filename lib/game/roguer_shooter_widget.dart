@@ -14,7 +14,7 @@ class RogueShooterWidget extends StatelessWidget {
     return GameWidget<RogueShooterGame>(
       game: game,
       loadingBuilder: (_) => const Center(
-        child: Text('Loading'),
+        child: Text('Loading...'),
       ),
       overlayBuilderMap: {
         'TitleScreen': (context, game) => TitleScreen(game: game),
