@@ -1,6 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
+import 'package:flame_audio/flame_audio.dart';
 
 import '../components/ennemy_creator.dart';
 import '../components/player.dart';
@@ -13,11 +14,12 @@ class RogueShooterGame extends FlameGame
     detection system in Flame.
   ''';
 
+  late final AudioPool _bulletPool;
   late final PlayerComponent _player;
   late final TextComponent _componentCounter;
   late final TextComponent _scoreText;
   late final Component _background;
-  late final EnnemyCreator _ennemies = EnnemyCreator();
+  late final EnnemyCreator _ennemies;
 
   int _life = 10;
 
@@ -31,24 +33,43 @@ class RogueShooterGame extends FlameGame
 
   @override
   Future<void> onLoad() async {
-    add(_player = PlayerComponent());
+    // Load audio
+    await FlameAudio.audioCache.load('alienshoot1.wav');
+    _bulletPool = await FlameAudio.createPool(
+      'alienshoot1.wav',
+      minPlayers: 1,
+      maxPlayers: 20,
+    );
+
+    _player = PlayerComponent();
+    _ennemies = EnnemyCreator();
     _background = StarBackGroundCreator();
+    _scoreText = TextComponent(
+        position: size - Vector2(0, 25),
+        anchor: Anchor.bottomRight,
+        priority: 1,
+      );
+    _componentCounter = TextComponent(
+      position: size,
+      anchor: Anchor.bottomRight,
+      priority: 1,
+    );
+  }
+
+  startGame() {
+    overlays.remove('TitleScreen');
+
+    bulletPool.start(volume: 0);
+
+    add(_player);
 
     addAll([
       FpsTextComponent(
         position: size - Vector2(0, 50),
         anchor: Anchor.bottomRight,
       ),
-      _scoreText = TextComponent(
-        position: size - Vector2(0, 25),
-        anchor: Anchor.bottomRight,
-        priority: 1,
-      ),
-      _componentCounter = TextComponent(
-        position: size,
-        anchor: Anchor.bottomRight,
-        priority: 1,
-      ),
+      _scoreText,
+      _componentCounter,
     ]);
 
     add(_ennemies);
@@ -66,12 +87,12 @@ class RogueShooterGame extends FlameGame
   }
 
   @override
-  void onPanStart(_) {
+  void onPanStart(info) {
     _player.beginFire();
   }
 
   @override
-  void onPanEnd(_) {
+  void onPanEnd(info) {
     _player.stopFire();
   }
 
@@ -84,6 +105,8 @@ class RogueShooterGame extends FlameGame
   void onPanUpdate(DragUpdateInfo info) {
     _player.position += info.delta.global;
   }
+
+  AudioPool get bulletPool => _bulletPool;
 
   void takeHit() {
     _life--;

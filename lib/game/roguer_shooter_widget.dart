@@ -1,5 +1,6 @@
 import 'package:flame/game.dart';
 import 'package:flutter/widgets.dart';
+import 'package:space_rogue/components/title_screen.dart';
 
 import 'rogue_shooter.dart';
 
@@ -8,11 +9,17 @@ class RogueShooterWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GameWidget(
-      game: RogueShooterGame(),
+    final game = RogueShooterGame();
+
+    return GameWidget<RogueShooterGame>(
+      game: game,
       loadingBuilder: (_) => const Center(
-        child: Text('Loading'),
+        child: Text('Loading...'),
       ),
+      overlayBuilderMap: {
+        'TitleScreen': (context, game) => TitleScreen(game: game),
+      },
+      initialActiveOverlays: const ['TitleScreen'],
     );
   }
 }
